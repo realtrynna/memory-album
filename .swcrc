@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/swcrc",
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "decorators": true,
+      "dynamicImport": true
+    },
+    "minify": {
+      "mangle": true,
+      "compress": true
+    },
+    "target": "es2016",
+    "baseUrl": "./"
+  },
+  "minify": true
+}
