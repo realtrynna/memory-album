@@ -1,0 +1,23 @@
+model Image {
+  id           Int       @id @default(autoincrement())
+  originalName String
+  saveName     String
+  extension    Extension
+  size         Int
+  path         String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  post    Post  @relation(fields: [postId], references: [id])
+  postId  Int
+  album   Album? @relation(fields: [albumId], references: [id])
+  albumId Int?   @unique
+
+  @@map("images")
+}
+
+enum Extension {
+  jpg
+  jpeg
+  png
+}

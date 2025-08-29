@@ -1,0 +1,21 @@
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String
+  phone     String   @unique
+  birthday  DateTime
+  provider  Provider @default(LOCAL)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts  Post[]
+  albums Album[]
+
+  @@map("users")
+}
+
+enum Provider {
+  LOCAL
+  KAKAO
+}
