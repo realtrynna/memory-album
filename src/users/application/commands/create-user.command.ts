@@ -1,6 +1,6 @@
 import { ICommand } from "@nestjs/cqrs";
 
-type Provider = "LOCAL" | "KAKAO";
+export type Provider = "LOCAL" | "KAKAO";
 
 export class CreateUserCommand implements ICommand {
     constructor(

@@ -10,7 +10,7 @@ export class CreateUserHandler
         console.log("여기가 호출 됩니다.", command);
 
         /**
-         * 핸들러에서 의존성을 주입받으려면?
+         * repository 호출
          */
     }
 }
