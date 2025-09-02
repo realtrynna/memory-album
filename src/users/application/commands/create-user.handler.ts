@@ -1,16 +1,23 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 
 import { CreateUserCommand } from "@/users/application/commands/create-user.command";
+import { PrismaService } from "@libs/db/prisma.service";
+import { Inject } from "@nestjs/common";
+import { UserFactory } from "@/users/domain/user.factory";
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserHandler
     implements ICommandHandler<CreateUserCommand, void>
 {
-    async execute(command: CreateUserCommand) {
-        console.log("여기가 호출 됩니다.", command);
+    constructor(
+        private readonly prisma: PrismaService,
+        @Inject() private readonly userFactory: UserFactory
+    ) {
+    }
 
-        /**
-         * repository 호출
-         */
+    async execute(command: CreateUserCommand) {
+        console.log("here", command);
+
+        // this.userFactory.create();
     }
 }

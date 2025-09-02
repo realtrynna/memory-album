@@ -3,6 +3,7 @@ import { ConfigModule } from "@nestjs/config";
 
 import env from "@/config/env";
 import { UsersModule } from "@/users/users.module";
+import { PrismaModule } from "@libs/db/prisma.module";
 
 @Module({
     imports: [
@@ -10,6 +11,7 @@ import { UsersModule } from "@/users/users.module";
             cache: true,
             load: [env],
         }),
+        PrismaModule,
         UsersModule,
     ],
 })
