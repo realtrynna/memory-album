@@ -1,7 +1,7 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ConsoleLogger } from "@nestjs/common";
-import { DtoExceptionFilter } from "@libs/dto.exception.filter";
+import { DtoExceptionFilter } from "@libs/exceptions/user/dto.exception.filter";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {

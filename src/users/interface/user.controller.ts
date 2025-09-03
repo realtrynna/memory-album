@@ -1,13 +1,15 @@
-import { Controller } from "@nestjs/common";
+import { Controller, UseFilters } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { CommandBus } from "@nestjs/cqrs";
 import { TypedBody, TypedRoute } from "@nestia/core";
 
 import type { CreateUserDto } from "@/users/interface/dto/create-user.dto";
 import { CreateUserCommand } from "@/users/application/commands/create-user.command";
+import { UserExceptionFilter } from "@libs/exceptions/user/user.exception.filter";
 
 @ApiTags("Users")
 @Controller("users")
+@UseFilters(UserExceptionFilter)
 export class UsersController {
     constructor(readonly commandBus: CommandBus) {}
 

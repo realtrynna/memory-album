@@ -17,7 +17,7 @@ type DtoValidationError = Array<{
 export class DtoExceptionFilter implements ExceptionFilter {
     catch(exception: HttpException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
-        const res = ctx.getResponse<Response>() as Response;
+        const res = ctx.getResponse<Response>();
 
         const exceptionList = {
             status: exception.getStatus(),

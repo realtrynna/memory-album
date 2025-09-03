@@ -1,0 +1,25 @@
+import { AggregateRoot } from "@nestjs/cqrs";
+import type { Prisma } from "@prisma/client";
+
+import { Provider } from "@/users/application/commands/create-user.command";
+import { UserCreatedEvent } from "@/users/domain/events/user-created.event";
+
+export type UserProperties = Readonly<Prisma.UserCreateInput>;
+
+export class User extends AggregateRoot {
+    private readonly email: string;
+    private readonly name: string;
+    private readonly password: string;
+    private readonly phone: string;
+    private readonly birthday: Date | string;
+    private readonly provider: Provider;
+
+    constructor(properties: UserProperties) {
+        super();
+        Object.assign(this, properties);
+    }
+
+    register() {
+        this.apply(new UserCreatedEvent(this.email));
+    }
+}

@@ -8,7 +8,7 @@ export class CreateUserCommand implements ICommand {
         readonly name: string,
         readonly password: string,
         readonly phone: string,
-        readonly birthday: string,
+        readonly birthday: Date | string,
         readonly provider: Provider,
     ) {}
 }
