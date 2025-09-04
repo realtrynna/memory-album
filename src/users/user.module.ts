@@ -6,13 +6,20 @@ import { CreateUserHandler } from "@/users/application/commands/create-user.hand
 import { UserFactory } from "@/users/domain/user.factory";
 import { PasswordModule } from "@libs/password/password.module";
 import { UserCreatedEventHandler } from "@/users/application/events/handlers/user-created.event.handler";
+import { UserRepositoryImplement } from "@/users/infrastructure/user.repository.implement";
 
 const application = [CreateUserHandler, UserCreatedEventHandler];
 const domain = [UserFactory];
+const infrastructure = [
+    {
+        provide: "token",
+        useClass: UserRepositoryImplement,
+    },
+];
 
 @Module({
     imports: [CqrsModule.forRoot(), PasswordModule],
     controllers: [UsersController],
-    providers: [...application, ...domain],
+    providers: [...application, ...domain, ...infrastructure],
 })
-export class UsersModule {}
+export class UserModule {}

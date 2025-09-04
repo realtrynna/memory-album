@@ -2,7 +2,7 @@ import { EventPublisher } from "@nestjs/cqrs";
 import { Inject } from "@nestjs/common";
 
 import { CreateUserCommand } from "@/users/application/commands/create-user.command";
-import { User } from "@/users/domain/user";
+import { User, UserProperties } from "@/users/domain/user";
 
 export class UserFactory {
     @Inject(EventPublisher) eventPublisher: EventPublisher;
@@ -25,5 +25,9 @@ export class UserFactory {
                 provider,
             }),
         );
+    }
+
+    reconstitute(properties: UserProperties) {
+        return this.eventPublisher.mergeObjectContext(new User(properties));
     }
 }
