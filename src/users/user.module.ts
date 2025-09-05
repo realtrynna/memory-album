@@ -7,12 +7,13 @@ import { UserFactory } from "@/users/domain/user.factory";
 import { PasswordModule } from "@libs/password/password.module";
 import { UserCreatedEventHandler } from "@/users/application/events/handlers/user-created.event.handler";
 import { UserRepositoryImplement } from "@/users/infrastructure/user.repository.implement";
+import { InjectionToken } from "@/users/application/injection-token";
 
 const application = [CreateUserHandler, UserCreatedEventHandler];
 const domain = [UserFactory];
 const infrastructure = [
     {
-        provide: "token",
+        provide: InjectionToken.USER_REPOSITORY,
         useClass: UserRepositoryImplement,
     },
 ];

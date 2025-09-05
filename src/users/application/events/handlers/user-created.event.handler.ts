@@ -6,5 +6,7 @@ import { UserCreatedEvent } from "@/users/domain/events/user-created.event";
 export class UserCreatedEventHandler
     implements IEventHandler<UserCreatedEvent>
 {
-    async handle(event: UserCreatedEvent) {}
+    async handle(event: UserCreatedEvent) {
+        console.log("생성된 사용자 정보", event);
+    }
 }
