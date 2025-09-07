@@ -11,7 +11,8 @@ export class UserRepositoryImplement implements UserRepository {
     constructor(
         @Inject(PrismaClient) private readonly prisma: PrismaClient,
         private readonly userFactory: UserFactory,
-    ) {}
+    ) {
+    }
 
     async findUnique(email: string): Promise<User | null> {
         const user = await this.prisma.user.findUnique({

@@ -33,17 +33,18 @@ export class CreateUserHandler
         if (existingUser) {
             throw new UserAlreadyExists(existingUser.getEmail());
         }
+
         const user = this.userFactory.create({
             ...command,
+            password: await this.passwordService.hash(command.password),
             birthday: new Date(command.birthday),
         });
-
-        // await user.setPassword(command.password, this.passwordService);
 
         user.register();
 
         await this.userRepository.create(user);
 
         user.commit();
+
     }
 }

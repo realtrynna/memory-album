@@ -24,11 +24,6 @@ export class User extends AggregateRoot {
         return this.email;
     }
 
-    async setPassword(password: string, passwordService: PasswordService) {
-        this.password = await passwordService.hash(password);
-        this.password = await passwordService.hash(password);
-    }
-
     register() {
         this.apply(new UserCreatedEvent(this.email));
     }
