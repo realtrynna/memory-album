@@ -8,17 +8,18 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  password  String
-  phone     String   @unique
-  birthday  DateTime
-  provider  Provider @default(LOCAL)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  albums    Album[]
-  posts     Post[]
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  name         String
+  password     String
+  phone        String   @unique
+  birthday     DateTime
+  provider     Provider @default(LOCAL)
+  refreshToken String?  @map("refresh_token")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  albums       Album[]
+  posts        Post[]
 
   @@map("users")
 }
@@ -28,9 +29,9 @@ model Post {
   title     String
   content   String
   location  String
-  isDeleted Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
   userId    Int
   images    Image[]
   user      User     @relation(fields: [userId], references: [id])
@@ -42,13 +43,13 @@ model Post {
 
 model Image {
   id           Int       @id @default(autoincrement())
-  originalName String
+  originalName String    @map("original_name")
   saveName     String
   extension    Extension
   size         Int
   path         String
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
   postId       Int
   albumId      Int?      @unique
   album        Album?    @relation(fields: [albumId], references: [id])
@@ -59,15 +60,15 @@ model Image {
 
 model Video {
   id           Int       @id @default(autoincrement())
-  originalName String
-  saveName     String
+  originalName String    @map("original_name")
+  saveName     String    @map("save_name")
   extension    Extension
   size         Int
   path         String
   duration     Int
   thumbnail    String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
   postId       Int
   post         Post      @relation(fields: [postId], references: [id])
 
@@ -77,8 +78,8 @@ model Video {
 model Album {
   id        Int      @id @default(autoincrement())
   title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   image     Image?
