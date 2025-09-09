@@ -1,8 +1,5 @@
-import {
-    HttpException,
-    HttpStatus,
-    UnauthorizedException,
-} from "@nestjs/common";
+import { HttpException, HttpStatus } from "@nestjs/common";
+import { ExceptionMessage } from "@/users/domain/exception-message";
 
 export class UserException extends HttpException {
     constructor(message: string, status: HttpStatus) {
@@ -10,17 +7,32 @@ export class UserException extends HttpException {
     }
 }
 
-export class UserAlreadyExists extends UserException {
-    constructor(email: string) {
-        super(
-            `해당 이메일(${email})로 가입된 사용자가 이미 존재합니다. 다른 이메일을 사용해 주세요.`,
-            HttpStatus.BAD_REQUEST,
-        );
+export class AlreadyExists extends UserException {
+    constructor() {
+        super(ExceptionMessage.ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
     }
 }
 
-export class UserUnauthorized extends UserException {
+export class TokenExpired extends UserException {
     constructor() {
-        super(`발급된 토큰이 올바르지 않습니다.`, HttpStatus.UNAUTHORIZED);
+        super(ExceptionMessage.TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED);
+    }
+}
+
+export class TokenValidate extends UserException {
+    constructor() {
+        super(ExceptionMessage.TOKEN_VALIDATE, HttpStatus.UNAUTHORIZED);
+    }
+}
+
+export class NotFound extends UserException {
+    constructor() {
+        super(ExceptionMessage.NOT_FOUND, HttpStatus.UNAUTHORIZED);
+    }
+}
+
+export class PasswordNotMatched extends UserException {
+    constructor() {
+        super(ExceptionMessage.PASSWORD_NOT_MATCHED, HttpStatus.UNAUTHORIZED);
     }
 }

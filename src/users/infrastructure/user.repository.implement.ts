@@ -11,8 +11,7 @@ export class UserRepositoryImplement implements UserRepository {
     constructor(
         @Inject(PrismaClient) private readonly prisma: PrismaClient,
         private readonly userFactory: UserFactory,
-    ) {
-    }
+    ) {}
 
     async findUnique(email: string): Promise<User | null> {
         const user = await this.prisma.user.findUnique({
@@ -32,6 +31,20 @@ export class UserRepositoryImplement implements UserRepository {
         return this.userFactory.reconstitute(created);
     }
 
+    async updateRefreshToken(
+        email: string,
+        refreshToken: string,
+    ): Promise<void> {
+        await this.prisma.user.update({
+            where: {
+                email,
+            },
+            data: {
+                refreshToken,
+            },
+        });
+    }
+
     private mapToPersistence(model: User): Prisma.UserCreateInput {
         const properties = JSON.parse(JSON.stringify(model)) as UserProperties;
 
@@ -46,6 +59,7 @@ export class UserRepositoryImplement implements UserRepository {
             phone: entity.phone,
             birthday: entity.birthday,
             provider: entity.provider,
+            refreshToken: entity.refreshToken,
         });
     }
 }

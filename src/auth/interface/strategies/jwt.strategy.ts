@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
              */
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             secretOrKey: appConfig.getPublicKey(),
-            ignoreExpiration: true,
+            ignoreExpiration: false,
         });
     }
 
@@ -22,6 +22,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
      * 토큰 블랙 리스트 확인
      */
     validate(payload: any) {
+        console.log("strategy validate", payload);
+
         return {
             email: payload.email,
         };

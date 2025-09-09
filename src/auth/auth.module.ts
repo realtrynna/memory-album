@@ -8,12 +8,16 @@ import { LoginHandler } from "@/auth/application/commands/login.handler";
 import { JwtStrategy } from "@/auth/interface/strategies/jwt.strategy";
 import type { JwtOptions } from "@/types";
 import { AppConfig } from "@/config/app-config";
+import { UserModule } from "@/users/user.module";
+import { PasswordModule } from "@libs/password/password.module";
+import { RefreshHandler } from "@/auth/application/commands/refresh.handler";
+import { AuthService } from "@/auth/application/auth.service";
 
-const application = [LoginHandler];
+const application = [LoginHandler, RefreshHandler, AuthService];
 
 @Module({
     imports: [
-        CqrsModule.forRoot(),
+        CqrsModule,
         JwtModule.registerAsync({
             useFactory: (appConfig: AppConfig) => {
                 const { algorithm, secret, expiresIn } = appConfig.getEnv()[
@@ -21,6 +25,7 @@ const application = [LoginHandler];
                 ] as JwtOptions;
 
                 return {
+                    issuer: "Memory album",
                     privateKey: appConfig.getPrivateKey(),
                     publicKey: appConfig.getPublicKey(),
                     signOptions: {
@@ -31,6 +36,8 @@ const application = [LoginHandler];
             },
             inject: [AppConfig],
         }),
+        UserModule,
+        PasswordModule,
     ],
     controllers: [AuthController],
     providers: [...application, JwtStrategy],

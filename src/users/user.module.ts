@@ -19,8 +19,9 @@ const infrastructure = [
 ];
 
 @Module({
-    imports: [CqrsModule.forRoot(), PasswordModule],
+    imports: [CqrsModule, PasswordModule],
     controllers: [UsersController],
     providers: [...application, ...domain, ...infrastructure],
+    exports: [InjectionToken.USER_REPOSITORY],
 })
 export class UserModule {}
