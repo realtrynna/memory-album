@@ -11,6 +11,7 @@ import {
 import { PASSWORD_SERVICE_IMPLEMENT_TOKEN } from "@libs/password/password.module";
 import type { PasswordService } from "@libs/password/password.module";
 import { JwtService } from "@nestjs/jwt";
+import { AuthService } from "@/auth/application/auth.service";
 
 @CommandHandler(LoginCommand)
 export class LoginHandler
@@ -29,6 +30,7 @@ export class LoginHandler
         @Inject(PASSWORD_SERVICE_IMPLEMENT_TOKEN)
         private readonly passwordService: PasswordService,
         private readonly jwtService: JwtService,
+        private readonly authService: AuthService,
     ) {}
 
     async execute(command: LoginCommand) {
@@ -51,10 +53,9 @@ export class LoginHandler
             email: command.email,
         };
 
-        const accessToken = this.jwtService.sign(tokenPayload);
-        const refreshToken = this.jwtService.sign(tokenPayload, {
-            expiresIn: "1s",
-        });
+        const accessToken = this.authService.accessToken(tokenPayload);
+        const refreshToken = this.authService.refreshToken(tokenPayload);
+
         await this.userRepository.updateRefreshToken(
             command.email,
             refreshToken,

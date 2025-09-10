@@ -3,10 +3,10 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectionToken } from "@/users/application/injection-token";
 import type { UserRepository } from "@/users/domain/user.repository";
 import {
-    NotFound,
     TokenExpired,
     TokenValidate,
 } from "@libs/exceptions/user/user.exception";
+import type { JwtPayload } from "@/types";
 
 @Injectable()
 export class AuthService {
@@ -18,7 +18,7 @@ export class AuthService {
 
     async refresh(refreshToken: string) {
         try {
-            const isVerify = await this.jwtService.verify(refreshToken);
+            const isVerify = this.jwtService.verify(refreshToken);
 
             if (!isVerify) {
                 throw new TokenValidate();
@@ -29,6 +29,23 @@ export class AuthService {
             if (!user || refreshToken !== user?.getRefreshToken) {
                 throw new TokenValidate();
             }
+
+            const payload = {
+                email: user.getEmail,
+            };
+
+            const newAccessToken = this.accessToken(payload);
+            const newRefreshToken = this.refreshToken(payload);
+
+            await this.userRepository.updateRefreshToken(
+                user.getEmail,
+                newRefreshToken,
+            );
+
+            return {
+                accessToken: newAccessToken,
+                refreshToken: newRefreshToken,
+            };
         } catch (err) {
             if (err.name === "TokenExpiredError") {
                 throw new TokenExpired();
@@ -36,5 +53,15 @@ export class AuthService {
 
             throw new TokenValidate();
         }
+    }
+
+    accessToken(payload: JwtPayload) {
+        return this.jwtService.sign(payload);
+    }
+
+    refreshToken(payload: JwtPayload) {
+        return this.jwtService.sign(payload, {
+            expiresIn: "3d",
+        });
     }
 }

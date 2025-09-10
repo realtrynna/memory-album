@@ -4,10 +4,19 @@ import { RefreshCommand } from "@/auth/application/commands/refresh.command";
 import { AuthService } from "@/auth/application/auth.service";
 
 @CommandHandler(RefreshCommand)
-export class RefreshHandler implements ICommandHandler<RefreshCommand, void> {
+export class RefreshHandler
+    implements
+        ICommandHandler<
+            RefreshCommand,
+            {
+                accessToken: string;
+                refreshToken: string;
+            }
+        >
+{
     constructor(private readonly authService: AuthService) {}
 
     async execute({ refreshToken }: RefreshCommand) {
-        await this.authService.refresh(refreshToken);
+        return await this.authService.refresh(refreshToken);
     }
 }

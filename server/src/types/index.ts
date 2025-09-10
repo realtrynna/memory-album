@@ -5,3 +5,7 @@ export interface JwtOptions {
     secret: string;
     expiresIn: string;
 }
+
+export interface JwtPayload {
+    email: string;
+}
