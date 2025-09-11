@@ -11,13 +11,20 @@ async function bootstrap() {
             colors: true,
             timestamp: true,
         }),
+        /**
+         * @TODO 환경 변수로 분리
+         */
+        cors: {
+            origin: "http://localhost:3000",
+            methods: ["GET", "POST"],
+        },
     });
 
     app.setGlobalPrefix("api");
     app.useGlobalFilters(new DtoExceptionFilter());
     app.useGlobalFilters(new PrismaExceptionFilter());
 
-    await app.listen(3000);
+    await app.listen(4000);
 }
 
 bootstrap();
