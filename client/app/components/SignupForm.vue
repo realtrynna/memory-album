@@ -62,7 +62,13 @@
                 />
             </div>
             <!-- 안내 문구 -->
-            <span class="ml-28 text-sm text-gray-500">
+            <span
+                class="ml-28 text-sm"
+                :class="{
+                    'text-gray-500': !isPassword,
+                    'text-blue-500': isPassword,
+                }"
+            >
                 {{ passwordHint }}
             </span>
         </div>
@@ -86,18 +92,19 @@
         <div class="flex items-center space-x-2">
             <label class="w-24 text-right font-medium">핸드폰</label>
             <input
-                v-model="phoneOne"
                 type="text"
                 maxlength="3"
-                class="w-1/4 border rounded-md p-2"
+                class="w-1/4 border rounded-md p-2 text-center"
                 required
+                value="010"
+                readonly
             />
             <span>-</span>
             <input
                 v-model="phoneTwo"
                 type="text"
                 maxlength="4"
-                class="w-1/4 border rounded-md p-2"
+                class="w-1/4 border rounded-md p-2 text-center"
                 required
             />
             <span>-</span>
@@ -105,7 +112,7 @@
                 v-model="phoneThree"
                 type="text"
                 maxlength="4"
-                class="w-1/4 border rounded-md p-2"
+                class="w-1/4 border rounded-md p-2 text-center"
                 required
             />
         </div>
@@ -119,11 +126,15 @@
             </select>
             <select v-model="birthMonth" class="w-1/4 border rounded-md p-2">
                 <option disabled value="">월</option>
-                <option v-for="m in 12" :key="m" :value="m">{{ m }}</option>
+                <option v-for="m in 12" :key="m" :value="m < 10 ? '0' + m : '' + m">
+                    {{ m < 10 ? "0" + m : m }}
+                </option>
             </select>
             <select v-model="birthDay" class="w-1/4 border rounded-md p-2">
                 <option disabled value="">일</option>
-                <option v-for="d in 31" :key="d" :value="d">{{ d }}</option>
+                <option v-for="d in 31" :key="d" :value="d < 10 ? '0' + d : '' + d">
+                    {{ d < 10 ? "0" + d : d }}
+                </option>
             </select>
         </div>
 
@@ -151,6 +162,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useSignupValidator } from "@/composables/useSignupValidator";
+import { useUserApi } from "@/composables/useUserApi";
 
 const emailId = ref("");
 const emailDomain = ref("");
@@ -159,14 +171,17 @@ const isSignupPossible = ref(true);
 const name = ref("");
 const password = ref("");
 const passwordConfirm = ref("");
-const phoneOne = ref("");
 const phoneTwo = ref("");
 const phoneThree = ref("");
+const birthYear = ref("");
+const birthMonth = ref("");
+const birthDay = ref("");
 const passwordConfirmInput = ref<HTMLInputElement | null>(null);
 const isPasswordConfirmFocused = ref(false);
 
-const { emailValidate, nameValidate, passwordValidate, phoneValidate } =
+const { emailValidate, nameValidate, passwordValidate, phoneValidate, birthdayValidate } =
     useSignupValidator();
+const { createUser, test } = useUserApi();
 
 const currentYear = new Date().getFullYear();
 const yearList = computed(() => {
@@ -181,21 +196,59 @@ const email = computed(() => {
         ? `${emailId.value}@${customDomain.value}`
         : `${emailId.value}@${emailDomain.value}`;
 });
+const isPassword = computed(() => {
+    return (
+        isPasswordConfirmFocused.value &&
+        passwordValidate(password.value, passwordConfirm.value)
+    );
+});
 const passwordHint = computed(() => {
-    return isPasswordConfirmFocused.value &&
-        password.value.length === passwordConfirm.value.length &&
-        password.value === passwordConfirm.value
-        ? "비밀번호가 일치합니다."
-        : passwordConfirm.value.length === 0
-          ? "비밀번호는 영문/숫자 + 특수문자를 포함하고 6~15자여야 합니다."
-          : "처음 입력한 비밀번호와 일치하지 않습니다.";
+    let str = "비밀번호는 영문/숫자 + 특수문자를 포함하고 6~15자여야 합니다.";
+
+    if (isPassword.value) {
+        str = "비밀번호가 일치합니다.";
+    } else if (
+        password.value &&
+        passwordConfirm.value &&
+        password.value !== passwordConfirm.value &&
+        isPasswordConfirmFocused.value
+    ) {
+        str = "처음 입력한 비밀번호와 일치하지 않습니다.";
+    }
+
+    return str;
 });
 const onFocus = () => (isPasswordConfirmFocused.value = true);
-const onBlur = () => (isPasswordConfirmFocused.value = false);
+const onBlur = () => {
+    isPasswordConfirmFocused.value = isPassword.value;
+};
 
 const handleSignup = async () => {
+    const phone = `010-${phoneTwo.value}-${phoneThree.value}`;
+    const birthday = `${birthYear.value}-${birthMonth.value}-${birthDay.value}`;
+
     const isEmailValidation = emailValidate(email.value);
     const isNameValidation = nameValidate(name.value);
-    const passwordValidation = passwordValidate(password.value, passwordConfirm.value);
+    const isPasswordValidation = passwordValidate(password.value, passwordConfirm.value);
+    const isPhoneValidation = phoneValidate(phone);
+    const isBirthdayValidation = birthdayValidate(birthday);
+
+    try {
+        const result = await test();
+
+        // conso
+
+        // const result = await createUser({
+        //     email: email.value,
+        //     name: name.value,
+        //     password: password.value,
+        //     phone,
+        //     birthday,
+        //     provider: "LOCAL",
+        // });
+        console.log("결과", result);
+    } catch (err) {
+        console.log("컴포넌트 에러", err.status);
+    }
 };
 </script>

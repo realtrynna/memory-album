@@ -18,10 +18,15 @@ export function useSignupValidator() {
         return phone.length === 13;
     };
 
+    const birthdayValidate = (birthday: string) => {
+        return birthday.length === 10;
+    };
+
     return {
         emailValidate,
         nameValidate,
         passwordValidate,
         phoneValidate,
+        birthdayValidate,
     };
 }
