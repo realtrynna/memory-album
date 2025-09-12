@@ -40,21 +40,22 @@ export class AuthController {
     async refresh(@Req() req) {
         const refreshToken = req.headers["x-refresh-token"];
 
-        if (!refreshToken) {
-            throw new TokenValidate();
-        }
-
-        const command = new RefreshCommand(refreshToken);
-
-        const { accessToken, refreshToken: newRefreshToken } =
-            await this.commandBus.execute(command);
-
-        return {
-            statusCode: HttpStatus.OK,
-            data: {
-                accessToken,
-                refreshToken: newRefreshToken,
-            },
-        };
+        console.log("here");
+        // if (!refreshToken) {
+        //     throw new TokenValidate();
+        // }
+        //
+        // const command = new RefreshCommand(refreshToken);
+        //
+        // const { accessToken, refreshToken: newRefreshToken } =
+        //     await this.commandBus.execute(command);
+        //
+        // return {
+        //     statusCode: HttpStatus.OK,
+        //     data: {
+        //         accessToken,
+        //         refreshToken: newRefreshToken,
+        //     },
+        // };
     }
 }

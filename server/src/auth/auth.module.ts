@@ -1,6 +1,5 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
-import { ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 
 import { AuthController } from "@/auth/interface/auth.controller";
@@ -36,10 +35,11 @@ const application = [LoginHandler, RefreshHandler, AuthService];
             },
             inject: [AppConfig],
         }),
-        UserModule,
+        forwardRef(() => UserModule),
         PasswordModule,
     ],
     controllers: [AuthController],
     providers: [...application, JwtStrategy],
+    exports: [AuthService],
 })
 export class AuthModule {}

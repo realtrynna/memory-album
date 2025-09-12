@@ -12,17 +12,11 @@ import { PASSWORD_SERVICE_IMPLEMENT_TOKEN } from "@libs/password/password.module
 import type { PasswordService } from "@libs/password/password.module";
 import { JwtService } from "@nestjs/jwt";
 import { AuthService } from "@/auth/application/auth.service";
+import type { LoginSuccess } from "@/types";
 
 @CommandHandler(LoginCommand)
 export class LoginHandler
-    implements
-        ICommandHandler<
-            LoginCommand,
-            {
-                accessToken: string;
-                refreshToken: string;
-            }
-        >
+    implements ICommandHandler<LoginCommand, LoginSuccess>
 {
     constructor(
         @Inject(InjectionToken.USER_REPOSITORY)

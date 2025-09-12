@@ -9,3 +9,8 @@ export interface JwtOptions {
 export interface JwtPayload {
     email: string;
 }
+
+export interface LoginSuccess {
+    accessToken: string;
+    refreshToken: string;
+}

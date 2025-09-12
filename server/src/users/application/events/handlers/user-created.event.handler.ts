@@ -7,6 +7,10 @@ export class UserCreatedEventHandler
     implements IEventHandler<UserCreatedEvent>
 {
     async handle(event: UserCreatedEvent) {
-        console.log("생성된 사용자 정보", event);
+        console.log("생성된 사용자", event);
+
+        /**
+         * @TODO 이메일 발송
+         */
     }
 }

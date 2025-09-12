@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 
 import { CreateUserCommand } from "@/users/application/commands/create-user.command";
@@ -8,10 +8,12 @@ import type { PasswordService } from "@libs/password/password.module";
 import { AlreadyExists } from "@libs/exceptions/user/user.exception";
 import type { UserRepository } from "@/users/domain/user.repository";
 import { InjectionToken } from "@/users/application/injection-token";
+import { AuthService } from "@/auth/application/auth.service";
+import type { LoginSuccess } from "@/types";
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserHandler
-    implements ICommandHandler<CreateUserCommand, void>
+    implements ICommandHandler<CreateUserCommand, LoginSuccess>
 {
     constructor(
         @Inject(InjectionToken.USER_REPOSITORY)
@@ -23,6 +25,8 @@ export class CreateUserHandler
         private readonly userFactory: UserFactory,
         @Inject(PASSWORD_SERVICE_IMPLEMENT_TOKEN)
         private readonly passwordService: PasswordService,
+        @Inject(forwardRef(() => AuthService))
+        private readonly authService: AuthService,
     ) {}
 
     async execute(command: CreateUserCommand) {
@@ -42,8 +46,20 @@ export class CreateUserHandler
 
         user.register();
 
-        await this.userRepository.create(user);
+        const createdUser = await this.userRepository.create(user);
 
         user.commit();
+
+        const tokenPayload = {
+            email: createdUser.getEmail,
+        };
+
+        const accessToken = this.authService.accessToken(tokenPayload);
+        const refreshToken = this.authService.refreshToken(tokenPayload);
+
+        return {
+            accessToken,
+            refreshToken,
+        };
     }
 }
