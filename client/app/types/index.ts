@@ -1,5 +1,10 @@
 type ProviderType = "LOCAL" | "KAKAO";
 
+export interface ApiResponse<T> {
+    statusCode: number;
+    data: T;
+}
+
 export interface User {
     email: string;
     name: string;
@@ -7,4 +12,6 @@ export interface User {
     phone: string;
     birthday: string;
     provider: ProviderType;
+    accessToken?: string;
+    refreshToken?: string;
 }

@@ -70,4 +70,8 @@ const isSignupModalOpen = ref(false);
 const openSignupModal = () => {
     isSignupModalOpen.value = true;
 };
+
+const handleKakaoLogin = () => {
+    console.log("herre");
+};
 </script>

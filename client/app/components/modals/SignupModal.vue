@@ -16,6 +16,8 @@
 </template>
 
 <script setup lang="ts">
+import SignupErrorModal from "./SignupErrorModal.vue";
+
 const props = defineProps({ isSignup: Boolean });
 const emits = defineEmits(["update:isSignup"]);
 </script>

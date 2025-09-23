@@ -1,4 +1,6 @@
 <template>
+    <SignupErrorModal v-model:isOpen="isErrorModalOpen" :errorMessage="errorMessage" />
+
     <form class="space-y-4" @submit.prevent="submit">
         <!-- 이메일 -->
         <div class="flex items-center space-x-2">
@@ -163,6 +165,10 @@
 import { computed, ref } from "vue";
 import { useSignupValidator } from "@/composables/useSignupValidator";
 import { useUserApi } from "@/composables/useUserApi";
+import SignupErrorModal from "@/components/modals/SignupErrorModal.vue";
+import { useAuthStore } from "@/stores/auth";
+import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
 
 const emailId = ref("");
 const emailDomain = ref("");
@@ -178,10 +184,15 @@ const birthMonth = ref("");
 const birthDay = ref("");
 const passwordConfirmInput = ref<HTMLInputElement | null>(null);
 const isPasswordConfirmFocused = ref(false);
+const isErrorModalOpen = ref(false);
+const errorMessage = ref("");
 
+const router = useRouter();
 const { emailValidate, nameValidate, passwordValidate, phoneValidate, birthdayValidate } =
     useSignupValidator();
-const { createUser, test } = useUserApi();
+const { createUser } = useUserApi();
+const authStore = useAuthStore();
+const { accessToken } = storeToRefs(authStore);
 
 const currentYear = new Date().getFullYear();
 const yearList = computed(() => {
@@ -233,22 +244,32 @@ const handleSignup = async () => {
     const isPhoneValidation = phoneValidate(phone);
     const isBirthdayValidation = birthdayValidate(birthday);
 
-    try {
-        const result = await test();
+    const result = await createUser({
+        email: email.value,
+        name: name.value,
+        password: password.value,
+        phone,
+        birthday,
+        provider: "LOCAL",
+    });
 
-        // conso
+    if (result.isSuccess) {
+        /**
+         * 1. 스토어에 사용자 이메일 토큰 저장
+         * 2. 라우터 이동
+         */
+        authStore.setToken("access token generated");
 
-        // const result = await createUser({
-        //     email: email.value,
-        //     name: name.value,
-        //     password: password.value,
-        //     phone,
-        //     birthday,
-        //     provider: "LOCAL",
-        // });
-        console.log("결과", result);
-    } catch (err) {
-        console.log("컴포넌트 에러", err.status);
+        await router.push({
+            name: "main",
+        });
+
+        return true;
     }
+
+    console.log("에러 메시지", result.error);
+
+    isErrorModalOpen.value = true;
+    errorMessage.value = "회원가입에 실패했습니다.";
 };
 </script>
