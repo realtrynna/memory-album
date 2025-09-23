@@ -29,10 +29,10 @@ export class CreateUserHandler
         private readonly authService: AuthService,
     ) {}
 
-    async execute(command: CreateUserCommand) {
-        const existingUser = await this.userRepository.findUnique(
-            command.email,
-        );
+    async execute(command: CreateUserCommand): Promise<LoginSuccess> {
+        const email = command.email;
+
+        const existingUser = await this.userRepository.findUnique(email);
 
         if (existingUser) {
             throw new AlreadyExists();
@@ -51,13 +51,14 @@ export class CreateUserHandler
         user.commit();
 
         const tokenPayload = {
-            email: createdUser.getEmail,
+            email,
         };
 
         const accessToken = this.authService.accessToken(tokenPayload);
         const refreshToken = this.authService.refreshToken(tokenPayload);
 
         return {
+            email,
             accessToken,
             refreshToken,
         };

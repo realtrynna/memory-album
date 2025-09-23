@@ -11,6 +11,7 @@ export interface JwtPayload {
 }
 
 export interface LoginSuccess {
+    email: string;
     accessToken: string;
     refreshToken: string;
 }

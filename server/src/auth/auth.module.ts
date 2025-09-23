@@ -11,6 +11,7 @@ import { UserModule } from "@/users/user.module";
 import { PasswordModule } from "@libs/password/password.module";
 import { RefreshHandler } from "@/auth/application/commands/refresh.handler";
 import { AuthService } from "@/auth/application/auth.service";
+import { KakaoStrategy } from "@/auth/interface/strategies/kakao.strategy";
 
 const application = [LoginHandler, RefreshHandler, AuthService];
 
@@ -39,7 +40,7 @@ const application = [LoginHandler, RefreshHandler, AuthService];
         PasswordModule,
     ],
     controllers: [AuthController],
-    providers: [...application, JwtStrategy],
+    providers: [...application, JwtStrategy, KakaoStrategy],
     exports: [AuthService],
 })
 export class AuthModule {}

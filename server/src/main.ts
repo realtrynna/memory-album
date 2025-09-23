@@ -1,8 +1,10 @@
 import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
 import { ConsoleLogger } from "@nestjs/common";
+
 import { DtoExceptionFilter } from "@libs/exceptions/user/dto.exception.filter";
 import { PrismaExceptionFilter } from "@libs/exceptions/prisma.exception.filter";
+import { AppConfig } from "@/config/app-config";
+import { AppModule } from "@/app.module";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
@@ -11,16 +13,14 @@ async function bootstrap() {
             colors: true,
             timestamp: true,
         }),
-        /**
-         * @TODO 환경 변수로 분리
-         */
-        cors: {
-            origin: "http://localhost:3000",
-            methods: ["GET", "POST"],
-            credentials: true,
-        },
     });
 
+    const appConfig = app.get(AppConfig);
+
+    app.enableCors({
+        origin: appConfig.getEnv().cors.origin,
+        credentials: true,
+    });
     app.setGlobalPrefix("api");
     app.useGlobalFilters(new DtoExceptionFilter());
     app.useGlobalFilters(new PrismaExceptionFilter());

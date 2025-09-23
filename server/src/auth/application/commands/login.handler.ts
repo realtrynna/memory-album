@@ -28,7 +28,9 @@ export class LoginHandler
     ) {}
 
     async execute(command: LoginCommand) {
-        const user = await this.userRepository.findUnique(command.email);
+        const email = command.email;
+
+        const user = await this.userRepository.findUnique(email);
 
         if (!user) {
             throw new NotFound();
@@ -44,18 +46,16 @@ export class LoginHandler
         }
 
         const tokenPayload = {
-            email: command.email,
+            email,
         };
 
         const accessToken = this.authService.accessToken(tokenPayload);
         const refreshToken = this.authService.refreshToken(tokenPayload);
 
-        await this.userRepository.updateRefreshToken(
-            command.email,
-            refreshToken,
-        );
+        await this.userRepository.updateRefreshToken(email, refreshToken);
 
         return {
+            email,
             accessToken,
             refreshToken,
         };

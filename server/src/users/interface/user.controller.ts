@@ -7,6 +7,14 @@ import type { CreateUserDto } from "@/users/interface/dto/create-user.dto";
 import { CreateUserCommand } from "@/users/application/commands/create-user.command";
 import { UserExceptionFilter } from "@libs/exceptions/user/user.exception.filter";
 import { responseWrap } from "@libs/response-wrap";
+import { UserResponseMap } from "@/constant";
+import type { LoginSuccess } from "@/types";
+
+export interface CreateUserCommandResult {
+    email: string;
+    accessToken: string;
+    refreshToken: string;
+}
 
 @ApiTags("Users")
 @Controller("users")
@@ -25,18 +33,13 @@ export class UsersController {
             "LOCAL",
         );
 
-        const { accessToken, refreshToken } =
-            await this.commandBus.execute(command);
+        const { email, accessToken, refreshToken } =
+            (await this.commandBus.execute(command)) as LoginSuccess;
 
-        /**
-         * @TODO 공통 응답 Wrapper 구현
-         */
-        return {
-            statusCode: HttpStatus.OK,
-            data: {
-                accessToken,
-                refreshToken,
-            },
-        };
+        return responseWrap(UserResponseMap.SIGNUP_SUCCESS, {
+            email,
+            accessToken,
+            refreshToken,
+        });
     }
 }
