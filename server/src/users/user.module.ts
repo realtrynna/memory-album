@@ -20,8 +20,8 @@ const infrastructure = [
 ];
 
 @Module({
-    imports: [CqrsModule, PasswordModule, forwardRef(() => AuthModule)],
     controllers: [UsersController],
+    imports: [CqrsModule, PasswordModule, forwardRef(() => AuthModule)],
     providers: [...application, ...domain, ...infrastructure],
     exports: [InjectionToken.USER_REPOSITORY],
 })

@@ -10,7 +10,6 @@ import {
 } from "@libs/exceptions/user/user.exception";
 import { PASSWORD_SERVICE_IMPLEMENT_TOKEN } from "@libs/password/password.module";
 import type { PasswordService } from "@libs/password/password.module";
-import { JwtService } from "@nestjs/jwt";
 import { AuthService } from "@/auth/application/auth.service";
 import type { LoginSuccess } from "@/types";
 
@@ -23,7 +22,6 @@ export class LoginHandler
         private readonly userRepository: UserRepository,
         @Inject(PASSWORD_SERVICE_IMPLEMENT_TOKEN)
         private readonly passwordService: PasswordService,
-        private readonly jwtService: JwtService,
         private readonly authService: AuthService,
     ) {}
 
@@ -36,16 +34,19 @@ export class LoginHandler
             throw new NotFound();
         }
 
-        const isVerify = await this.passwordService.verify(
-            user.getPassword,
+        const isVerify = await user.verifyPassword(
             command.password,
+            this.passwordService,
         );
 
         if (!isVerify) {
             throw new PasswordNotMatched();
         }
 
+        console.log("로그인 사용자", user);
+
         const tokenPayload = {
+            id: user.getId,
             email,
         };
 

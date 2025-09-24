@@ -3,6 +3,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
 
 import { AppConfig } from "@/config/app-config";
+import type { JwtPayload } from "@/types";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
@@ -17,15 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
         });
     }
 
-    /**
-     * repository를 주입받아 사용자 정보 반환 가능
-     * 토큰 블랙 리스트 확인
-     */
-    validate(payload: any) {
-        console.log("strategy validate", payload);
-
-        return {
-            email: payload.email,
-        };
+    validate(payload: JwtPayload) {
+        return payload;
     }
 }

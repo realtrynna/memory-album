@@ -16,7 +16,7 @@ export interface CreateUserCommandResult {
     refreshToken: string;
 }
 
-@ApiTags("Users")
+@ApiTags("유저")
 @Controller("users")
 @UseFilters(UserExceptionFilter)
 export class UsersController {
@@ -36,7 +36,9 @@ export class UsersController {
         const { email, accessToken, refreshToken } =
             (await this.commandBus.execute(command)) as LoginSuccess;
 
-        return responseWrap(UserResponseMap.SIGNUP_SUCCESS, {
+        UserResponseMap.LOGIN_SUCCESS.message = "회원가입에 성공하였습니다.";
+
+        return responseWrap(UserResponseMap.LOGIN_SUCCESS, {
             email,
             accessToken,
             refreshToken,

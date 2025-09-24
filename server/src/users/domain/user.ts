@@ -3,10 +3,12 @@ import type { Prisma } from "@prisma/client";
 
 import { Provider } from "@/users/application/commands/create-user.command";
 import { UserCreatedEvent } from "@/users/domain/events/user-created.event";
+import type { PasswordService } from "@libs/password/password.module";
 
-export type UserProperties = Readonly<Prisma.UserCreateInput>;
+export type UserProperties = Readonly<Prisma.UserUncheckedCreateInput>;
 
 export class User extends AggregateRoot {
+    private readonly id: number;
     private readonly email: string;
     private readonly name: string;
     private readonly password: string;
@@ -18,6 +20,10 @@ export class User extends AggregateRoot {
     constructor(properties: UserProperties) {
         super();
         Object.assign(this, properties);
+    }
+
+    get getId() {
+        return this.id;
     }
 
     get getEmail() {
@@ -34,5 +40,12 @@ export class User extends AggregateRoot {
 
     register() {
         this.apply(new UserCreatedEvent(this.email));
+    }
+
+    async verifyPassword(
+        rawPassword: string,
+        passwordService: PasswordService,
+    ): Promise<boolean> {
+        return passwordService.verify(this.getPassword, rawPassword);
     }
 }

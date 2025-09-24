@@ -16,6 +16,7 @@ import { KakaoStrategy } from "@/auth/interface/strategies/kakao.strategy";
 const application = [LoginHandler, RefreshHandler, AuthService];
 
 @Module({
+    controllers: [AuthController],
     imports: [
         CqrsModule,
         JwtModule.registerAsync({
@@ -39,7 +40,6 @@ const application = [LoginHandler, RefreshHandler, AuthService];
         forwardRef(() => UserModule),
         PasswordModule,
     ],
-    controllers: [AuthController],
     providers: [...application, JwtStrategy, KakaoStrategy],
     exports: [AuthService],
 })

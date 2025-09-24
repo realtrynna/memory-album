@@ -46,11 +46,12 @@ export class CreateUserHandler
 
         user.register();
 
-        const createdUser = await this.userRepository.create(user);
+        const created = await this.userRepository.create(user);
 
         user.commit();
 
         const tokenPayload = {
+            id: created.getId,
             email,
         };
 

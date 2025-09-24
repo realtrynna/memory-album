@@ -53,6 +53,7 @@ export class UserRepositoryImplement implements UserRepository {
 
     private entityToModel(entity: Prisma.UserGetPayload<{ include?: any }>) {
         return this.userFactory.reconstitute({
+            id: entity.id,
             email: entity.email,
             name: entity.name,
             password: entity.password,

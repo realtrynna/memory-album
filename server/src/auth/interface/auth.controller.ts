@@ -14,28 +14,26 @@ import type { LoginDto } from "@/auth/interface/dto/login.dto";
 import { LoginCommand } from "@/auth/application/commands/login.command";
 import { KakaoAuthGuard } from "@libs/guards/kakao-auth.guard";
 import type { LoginSuccess } from "@/types";
+import { responseWrap } from "@libs/response-wrap";
+import { UserResponseMap } from "@/constant";
 
-@ApiTags("Auth")
+@ApiTags("인증")
 @Controller("auth")
 export class AuthController {
     constructor(readonly commandBus: CommandBus) {}
 
     @TypedRoute.Post("login")
-    @HttpCode(HttpStatus.OK)
     async login(@TypedBody() loginDto: LoginDto) {
         const command = new LoginCommand(loginDto.email, loginDto.password);
 
-        const { accessToken, refreshToken } = (await this.commandBus.execute(
-            command,
-        )) as LoginSuccess;
+        const { email, accessToken, refreshToken } =
+            (await this.commandBus.execute(command)) as LoginSuccess;
 
-        return {
-            statusCode: HttpStatus.OK,
-            data: {
-                accessToken,
-                refreshToken,
-            },
-        };
+        return responseWrap(UserResponseMap.LOGIN_SUCCESS, {
+            email,
+            accessToken,
+            refreshToken,
+        });
     }
 
     @TypedRoute.Post("refresh")
