@@ -1,3 +1,4 @@
+import type { Request } from "express";
 import type { Algorithm } from "jsonwebtoken";
 
 export interface JwtOptions {
@@ -7,6 +8,7 @@ export interface JwtOptions {
 }
 
 export interface JwtPayload {
+    id: number;
     email: string;
 }
 
@@ -14,4 +16,8 @@ export interface LoginSuccess {
     email: string;
     accessToken: string;
     refreshToken: string;
+}
+
+export interface RequestUser extends Request {
+    user: JwtPayload;
 }

@@ -24,6 +24,19 @@ model User {
   @@map("users")
 }
 
+model Album {
+  id        Int      @id @default(autoincrement())
+  title     String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userId    Int
+
+  user      User     @relation(fields: [userId], references: [id])
+  posts     PostAlbums[]
+
+  @@map("albums")
+}
+
 model Post {
   id        Int      @id @default(autoincrement())
   title     String
@@ -33,12 +46,24 @@ model Post {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   userId    Int
-  images    Image[]
-  user      User     @relation(fields: [userId], references: [id])
-  videos    Video[]
-  albums    Album[]  @relation("AlbumToPost")
+
+  user   User    @relation(fields: [userId], references: [id])
+  albums PostAlbums[]
+  images Image[]
+  videos Video[]
 
   @@map("posts")
+}
+
+model PostAlbums {
+  postId Int
+  albumId Int
+  post  Post    @relation(fields: [postId], references: [id])
+  album  Album    @relation(fields: [albumId], references: [id])
+
+  @@id([postId, albumId])
+
+  @@map("post_albums")
 }
 
 model Image {
@@ -51,8 +76,7 @@ model Image {
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   postId       Int
-  albumId      Int?      @unique
-  album        Album?    @relation(fields: [albumId], references: [id])
+
   post         Post      @relation(fields: [postId], references: [id])
 
   @@map("images")
@@ -70,22 +94,10 @@ model Video {
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   postId       Int
+
   post         Post      @relation(fields: [postId], references: [id])
 
   @@map("videos")
-}
-
-model Album {
-  id        Int      @id @default(autoincrement())
-  title     String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  image     Image?
-  posts     Post[]   @relation("AlbumToPost")
-
-  @@map("albums")
 }
 
 enum Provider {

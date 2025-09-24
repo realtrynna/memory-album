@@ -32,7 +32,10 @@ export class DtoExceptionFilter implements ExceptionFilter {
         return res.status(exceptionList.status).json({
             statusCode: exceptionList.status,
             message: "요청값의 형식이 올바르지 않습니다.",
-            cause: this.errorExtraction(errorList),
+            cause:
+                this.errorExtraction(errorList).length === 0
+                    ? "요청 본문의 형식은 application/json이어야 합니다."
+                    : this.errorExtraction(errorList),
         });
     }
 
