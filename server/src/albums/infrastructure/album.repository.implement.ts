@@ -1,7 +1,7 @@
-import { AlbumRepository } from "@/albums/domain/album.repository";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { Inject, Injectable } from "@nestjs/common";
 
+import { AlbumRepository } from "@/albums/domain/album.repository";
 import type { Album, AlbumProperties } from "@/albums/domain/album";
 
 @Injectable()
@@ -15,8 +15,6 @@ export class AlbumRepositoryImplement implements AlbumRepository {
     }
 
     private mapToPersistence(model: Album): Prisma.AlbumUncheckedCreateInput {
-        const properties = JSON.parse(JSON.stringify(model)) as AlbumProperties;
-
-        return properties;
+        return JSON.parse(JSON.stringify(model)) as AlbumProperties;
     }
 }

@@ -21,3 +21,19 @@ export interface LoginSuccess {
 export interface RequestUser extends Request {
     user: JwtPayload;
 }
+
+export type FileExtension = "jpg" | "jpeg" | "png" | "mp4" | "webm";
+
+export interface MediaFile {
+    filename?: string | null;
+    filetype?: string | null;
+    extension?: FileExtension;
+    size?: number | null;
+    path?: string | null;
+}
+
+declare module "express" {
+    export interface Request {
+        file?: MediaFile;
+    }
+}

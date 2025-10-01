@@ -1,5 +1,4 @@
 export interface ResponseMeta<T> {
-    statusCode: number;
     message: string;
     data?: T | null;
 }

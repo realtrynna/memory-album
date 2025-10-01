@@ -1,12 +1,5 @@
 import { ApiTags } from "@nestjs/swagger";
-import {
-    Controller,
-    HttpCode,
-    HttpStatus,
-    Req,
-    Res,
-    UseGuards,
-} from "@nestjs/common";
+import { Controller, Req, UseGuards } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import { TypedBody, TypedQuery, TypedRoute } from "@nestia/core";
 
@@ -15,7 +8,7 @@ import { LoginCommand } from "@/auth/application/commands/login.command";
 import { KakaoAuthGuard } from "@libs/guards/kakao-auth.guard";
 import type { LoginSuccess } from "@/types";
 import { responseWrap } from "@libs/response-wrap";
-import { UserResponseMap } from "@/constant";
+import { ResponseMap } from "@/constant";
 
 @ApiTags("인증")
 @Controller("auth")
@@ -29,7 +22,7 @@ export class AuthController {
         const { email, accessToken, refreshToken } =
             (await this.commandBus.execute(command)) as LoginSuccess;
 
-        return responseWrap(UserResponseMap.LOGIN_SUCCESS, {
+        return responseWrap(ResponseMap.LOGIN_SUCCESS, {
             email,
             accessToken,
             refreshToken,

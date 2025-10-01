@@ -19,6 +19,8 @@ export class DtoExceptionFilter implements ExceptionFilter {
         const ctx = host.switchToHttp();
         const res = ctx.getResponse<Response>();
 
+        console.log("예외", exception.getResponse()["message"]);
+
         const exceptionList = {
             status: exception.getStatus(),
             response: exception.getResponse(),

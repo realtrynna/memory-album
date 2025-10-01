@@ -57,8 +57,6 @@ export class AuthService {
     }
 
     accessToken(payload: JwtPayload) {
-        console.log("토큰 페이로드", payload);
-
         return this.jwtService.sign(payload);
     }
 

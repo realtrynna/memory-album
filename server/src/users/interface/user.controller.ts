@@ -7,7 +7,7 @@ import type { CreateUserDto } from "@/users/interface/dto/create-user.dto";
 import { CreateUserCommand } from "@/users/application/commands/create-user.command";
 import { UserExceptionFilter } from "@libs/exceptions/user/user.exception.filter";
 import { responseWrap } from "@libs/response-wrap";
-import { UserResponseMap } from "@/constant";
+import { ResponseMap } from "@/constant";
 import type { LoginSuccess } from "@/types";
 
 export interface CreateUserCommandResult {
@@ -36,9 +36,9 @@ export class UsersController {
         const { email, accessToken, refreshToken } =
             (await this.commandBus.execute(command)) as LoginSuccess;
 
-        UserResponseMap.LOGIN_SUCCESS.message = "회원가입에 성공하였습니다.";
+        ResponseMap.LOGIN_SUCCESS.message = "회원가입에 성공하였습니다.";
 
-        return responseWrap(UserResponseMap.LOGIN_SUCCESS, {
+        return responseWrap(ResponseMap.LOGIN_SUCCESS, {
             email,
             accessToken,
             refreshToken,

@@ -38,4 +38,14 @@ export class AppConfig {
     getPublicKey() {
         return this.publicKey;
     }
+
+    getS3() {
+        const { region, accessKey, secretKey } = this.env[NODE_ENV].s3;
+
+        return {
+            region,
+            accessKey,
+            secretKey,
+        };
+    }
 }

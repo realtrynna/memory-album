@@ -2,10 +2,13 @@ import { Controller, Req, UseGuards } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { CommandBus } from "@nestjs/cqrs";
 import { TypedBody, TypedRoute } from "@nestia/core";
+
 import type { CreateAlbumDto } from "@/albums/interface/dto/create-album.dto";
 import { CreateAlbumCommand } from "@/albums/application/commands/create-album.command";
 import { JwtAuthGuard } from "@libs/guards/jwt-auth.guard";
 import type { RequestUser } from "@/types";
+import { responseWrap } from "@libs/response-wrap";
+import { ResponseMap } from "@/constant";
 
 @ApiTags("앨범")
 @Controller("albums")
@@ -24,5 +27,7 @@ export class AlbumController {
         );
 
         await this.commandBus.execute(command);
+
+        return responseWrap(ResponseMap.ALBUM_CREATE_SUCCESS, null);
     }
 }

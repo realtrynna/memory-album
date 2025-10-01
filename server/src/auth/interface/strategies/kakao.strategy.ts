@@ -5,6 +5,9 @@ import { Strategy } from "passport-kakao";
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, "kakao") {
     constructor() {
+        /**
+         * @TODO 환경 변수값 주입
+         */
         super({
             clientID: "1abf02fef343ccb7bec2c4e895febaba",
             clientSecret: "2GaHGKIeZQzl9UXk59wYLOk8XARGmwwQ",

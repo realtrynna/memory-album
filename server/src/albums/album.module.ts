@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
-import { AlbumController } from "@/albums/interface/album.controller";
 import { CqrsModule } from "@nestjs/cqrs";
+
+import { AlbumController } from "@/albums/interface/album.controller";
 import { CreateAlbumHandler } from "@/albums/application/commands/create-album.handler";
 import { InjectionToken } from "@/albums/application/injection-token";
 import { AlbumRepositoryImplement } from "@/albums/infrastructure/album.repository.implement";
