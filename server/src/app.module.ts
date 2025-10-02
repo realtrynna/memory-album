@@ -26,7 +26,7 @@ import { PostModule } from "@/posts/post.module";
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(MediaFileParseMiddleware).forRoutes({
-            path: "posts",
+            path: "posts/file",
             method: RequestMethod.POST,
         });
     }

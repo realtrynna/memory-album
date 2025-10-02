@@ -4,7 +4,7 @@ import {
     InternalServerErrorException,
     NestMiddleware,
 } from "@nestjs/common";
-import busboy from "busboy";
+import busboy, { FileInfo } from "busboy";
 import type { Request, Response } from "express";
 import { getVideoDurationInSeconds } from "get-video-duration";
 import {
@@ -38,19 +38,17 @@ export class MediaFileParseMiddleware implements NestMiddleware {
             }
 
             try {
-                const result = await this.upload(file);
+                const result = await this.upload(file, info);
 
-                const extension = info.filename.split(".");
+                // if (!req.file) req.file = {};
 
-                if (!req.file) req.file = {};
-
-                req.file.filename = info.filename;
-                req.file.filetype = this.getFiletype(info.mimeType);
-                req.file.extension = extension[
-                    extension.length - 1
-                ] as FileExtension;
-                req.file.size = result.size;
-                req.file.path = result.path;
+                req.file = {
+                    filename: info.filename,
+                    filetype: result.filetype,
+                    extension: result.extension as FileExtension,
+                    size: result.size,
+                    path: result.path as string,
+                };
 
                 next();
             } catch (err) {
@@ -69,19 +67,26 @@ export class MediaFileParseMiddleware implements NestMiddleware {
         req.pipe(bb);
     }
 
-    private getFiletype(mimeType: string): "image" | "video" | "unknown" {
-        if (this.imageMimeTypeList.includes(mimeType)) {
-            return "image";
-        }
+    private getFileInfo(file: FileInfo) {
+        const temp = file.filename.split(".");
+        temp.pop();
+        const filename = temp.join(".");
+        const filetype = file.mimeType.split("/")[0];
+        const extension = file.filename.split(".").pop();
+        const folder = filetype === "image" ? "image" : "video";
+        const savedFilename =
+            folder + "/" + Date.now() + "_" + filename + "." + extension;
 
-        if (this.videoMimeTypeList.includes(mimeType)) {
-            return "video";
-        }
-
-        return "unknown";
+        return {
+            filename,
+            savedFilename,
+            filetype,
+            mimeType: file.mimeType,
+            extension,
+        };
     }
 
-    private async upload(stream: Readable) {
+    private async upload(stream: Readable, info: FileInfo) {
         let size = 0;
 
         const pass = new PassThrough();
@@ -90,6 +95,8 @@ export class MediaFileParseMiddleware implements NestMiddleware {
 
         stream.pipe(pass);
 
+        const fileInfo = this.getFileInfo(info);
+
         const client = new S3Client({
             region: this.appConfig.getS3().region,
             credentials: {
@@ -97,20 +104,21 @@ export class MediaFileParseMiddleware implements NestMiddleware {
                 secretAccessKey: this.appConfig.getS3().secretKey,
             },
         });
-
         const upload = await new Upload({
             client,
             params: {
                 Bucket: "dev-know",
-                Key: "uploads/sample.mp4",
+                Key: fileInfo.savedFilename,
                 Body: pass,
-                ContentType: "video/mp4",
+                ContentType: fileInfo.mimeType,
             },
         }).done();
 
         return {
             path: upload.Key,
             size,
+            filetype: fileInfo.filetype,
+            extension: fileInfo.extension,
         };
     }
 }

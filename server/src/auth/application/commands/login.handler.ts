@@ -43,8 +43,6 @@ export class LoginHandler
             throw new PasswordNotMatched();
         }
 
-        console.log("로그인 사용자", user);
-
         const tokenPayload = {
             id: user.getId,
             email,

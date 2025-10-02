@@ -1,5 +1,6 @@
 import type { Request } from "express";
 import type { Algorithm } from "jsonwebtoken";
+import { tags } from "typia";
 
 export interface JwtOptions {
     algorithm: Algorithm;
@@ -25,15 +26,16 @@ export interface RequestUser extends Request {
 export type FileExtension = "jpg" | "jpeg" | "png" | "mp4" | "webm";
 
 export interface MediaFile {
-    filename?: string | null;
-    filetype?: string | null;
-    extension?: FileExtension;
-    size?: number | null;
-    path?: string | null;
+    filename: string & tags.MinLength<1>;
+    filetype: string & tags.MinLength<1>;
+    extension: FileExtension;
+    size: number & tags.Minimum<1>;
+    path: string & tags.MinLength<1>;
 }
 
 declare module "express" {
     export interface Request {
-        file?: MediaFile;
+        file: MediaFile;
+        user: JwtPayload;
     }
 }

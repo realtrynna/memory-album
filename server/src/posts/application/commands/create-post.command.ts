@@ -7,8 +7,7 @@ export class CreatePostCommand implements ICommand {
         readonly title: string,
         readonly content: string,
         readonly location: string,
-        readonly albumId: string,
-        readonly file: MediaFile,
         readonly userId: number,
+        readonly images: MediaFile[],
     ) {}
 }
