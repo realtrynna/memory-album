@@ -21,7 +21,21 @@ export class CreatePostHandler
             content: command.content,
             location: command.location,
             userId: command.userId,
-            images: command.images,
+            images: {
+                createMany: {
+                    data: command.images.map((file) => {
+                        return {
+                            originalName: file.filename,
+                            saveName: file.savedFilename,
+                            extension: file.extension,
+                            size: file.size,
+                            path: file.path,
+                        };
+                    }),
+                },
+            },
         });
+
+        await this.postRepository.create(post);
     }
 }

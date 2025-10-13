@@ -27,6 +27,7 @@ export type FileExtension = "jpg" | "jpeg" | "png" | "mp4" | "webm";
 
 export interface MediaFile {
     filename: string & tags.MinLength<1>;
+    savedFilename: string;
     filetype: string & tags.MinLength<1>;
     extension: FileExtension;
     size: number & tags.Minimum<1>;

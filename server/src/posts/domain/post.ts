@@ -8,8 +8,8 @@ export class Post {
     private readonly title: string;
     private readonly content: string;
     private readonly location: string;
-    private readonly images: MediaFile[];
     private readonly userId: number;
+    private readonly images: MediaFile[];
 
     constructor(properties: PostProperties) {
         Object.assign(this, properties);

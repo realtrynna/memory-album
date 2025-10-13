@@ -44,6 +44,7 @@ export class MediaFileParseMiddleware implements NestMiddleware {
 
                 req.file = {
                     filename: info.filename,
+                    savedFilename: result.savedFilename,
                     filetype: result.filetype,
                     extension: result.extension as FileExtension,
                     size: result.size,
@@ -74,11 +75,11 @@ export class MediaFileParseMiddleware implements NestMiddleware {
         const filetype = file.mimeType.split("/")[0];
         const extension = file.filename.split(".").pop();
         const folder = filetype === "image" ? "image" : "video";
-        const savedFilename =
-            folder + "/" + Date.now() + "_" + filename + "." + extension;
+        const savedFilename = Date.now() + "_" + filename + "." + extension;
 
         return {
             filename,
+            folder,
             savedFilename,
             filetype,
             mimeType: file.mimeType,
@@ -108,13 +109,14 @@ export class MediaFileParseMiddleware implements NestMiddleware {
             client,
             params: {
                 Bucket: "dev-know",
-                Key: fileInfo.savedFilename,
+                Key: fileInfo.folder + "/" + fileInfo.savedFilename,
                 Body: pass,
                 ContentType: fileInfo.mimeType,
             },
         }).done();
 
         return {
+            savedFilename: fileInfo.savedFilename,
             path: upload.Key,
             size,
             filetype: fileInfo.filetype,

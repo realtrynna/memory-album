@@ -8,6 +8,8 @@ import { JwtAuthGuard } from "@libs/guards/jwt-auth.guard";
 import { CreatePostCommand } from "@/posts/application/commands/create-post.command";
 import type { CreatePostDto } from "@/posts/interface/dto/create-post.dto";
 import { JwtPayload } from "@/types";
+import { responseWrap } from "@libs/response-wrap";
+import { ResponseMap } from "@/constant";
 
 @ApiTags("포스트")
 @Controller("posts")
@@ -29,10 +31,12 @@ export class PostController {
         );
 
         await this.commandBus.execute(command);
+
+        return responseWrap(ResponseMap.POST_CREATE_SUCCESS, null);
     }
 
     @TypedRoute.Post("file")
     async uploadMediaFile(@Req() req: Request) {
-        console.log("controller", req.file);
+        return responseWrap(ResponseMap.MEDIA_FILE_UPLOAD_SUCCESS, req.file);
     }
 }

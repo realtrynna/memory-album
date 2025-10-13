@@ -11,12 +11,12 @@ model User {
   id           Int      @id @default(autoincrement())
   email        String   @unique
   name         String
-  password     String
   phone        String   @unique
   birthday     DateTime
   provider     Provider @default(LOCAL)
-  refreshToken String?  @map("refresh_token")
   createdAt    DateTime @default(now()) @map("created_at")
+  password     String
+  refreshToken String?  @map("refresh_token")
   updatedAt    DateTime @updatedAt @map("updated_at")
   albums       Album[]
   posts        Post[]
@@ -25,76 +25,71 @@ model User {
 }
 
 model Album {
-  id        Int      @id @default(autoincrement())
+  id        Int          @id @default(autoincrement())
   title     String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
   userId    Int
-
-  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+  user      User         @relation(fields: [userId], references: [id])
   posts     PostAlbums[]
 
   @@map("albums")
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
+  id        Int          @id @default(autoincrement())
   title     String
   content   String
   location  String
-  isDeleted Boolean  @default(false) @map("is_deleted")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
   userId    Int
-
-  user   User    @relation(fields: [userId], references: [id])
-  albums PostAlbums[]
-  images Image[]
-  videos Video[]
+  createdAt DateTime     @default(now()) @map("created_at")
+  isDeleted Boolean      @default(false) @map("is_deleted")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+  images    Image[]
+  albums    PostAlbums[]
+  user      User         @relation(fields: [userId], references: [id])
+  videos    Video[]
 
   @@map("posts")
 }
 
 model PostAlbums {
-  postId Int
+  postId  Int
   albumId Int
-  post  Post    @relation(fields: [postId], references: [id])
-  album  Album    @relation(fields: [albumId], references: [id])
+  album   Album @relation(fields: [albumId], references: [id])
+  post    Post  @relation(fields: [postId], references: [id])
 
   @@id([postId, albumId])
-
   @@map("post_albums")
 }
 
 model Image {
   id           Int       @id @default(autoincrement())
-  originalName String    @map("original_name")
   saveName     String
   extension    Extension
   size         Int
   path         String
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
   postId       Int
-
-  post         Post      @relation(fields: [postId], references: [id])
+  createdAt    DateTime  @default(now()) @map("created_at")
+  originalName String    @map("original_name")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  post         Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@map("images")
 }
 
 model Video {
   id           Int       @id @default(autoincrement())
-  originalName String    @map("original_name")
-  saveName     String    @map("save_name")
   extension    Extension
   size         Int
   path         String
   duration     Int
   thumbnail    String?
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
   postId       Int
-
+  createdAt    DateTime  @default(now()) @map("created_at")
+  originalName String    @map("original_name")
+  saveName     String    @map("save_name")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
   post         Post      @relation(fields: [postId], references: [id])
 
   @@map("videos")
@@ -109,4 +104,6 @@ enum Extension {
   jpg
   jpeg
   png
+  mp4
+  webm
 }

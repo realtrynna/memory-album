@@ -5,8 +5,9 @@ import { AlbumController } from "@/albums/interface/album.controller";
 import { CreateAlbumHandler } from "@/albums/application/commands/create-album.handler";
 import { InjectionToken } from "@/albums/application/injection-token";
 import { AlbumRepositoryImplement } from "@/albums/infrastructure/album.repository.implement";
+import { AddAlbumPostsHandler } from "@/albums/application/commands/add-album-posts.handler";
 
-const application = [CreateAlbumHandler];
+const application = [CreateAlbumHandler, AddAlbumPostsHandler];
 const infrastructure = [
     {
         provide: InjectionToken.ALBUM_REPOSITORY,
