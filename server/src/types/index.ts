@@ -25,18 +25,22 @@ export interface RequestUser extends Request {
 
 export type FileExtension = "jpg" | "jpeg" | "png" | "mp4" | "webm";
 
-export interface MediaFile {
+export interface ImageFile {
     filename: string & tags.MinLength<1>;
-    savedFilename: string;
-    filetype: string & tags.MinLength<1>;
+    savedFilename: string & tags.MinLength<1>;
     extension: FileExtension;
     size: number & tags.Minimum<1>;
     path: string & tags.MinLength<1>;
+    filetype?: string & tags.MinLength<1>;
+    createdAt?: string;
+    updatedAt?: string;
 }
+
+export type VideoFile = ImageFile & { duration: number; thumbnail: string };
 
 declare module "express" {
     export interface Request {
-        file: MediaFile;
+        file: ImageFile;
         user: JwtPayload;
     }
 }

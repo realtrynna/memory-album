@@ -65,13 +65,13 @@ model PostAlbums {
 
 model Image {
   id           Int       @id @default(autoincrement())
-  saveName     String
+  filename      String
+  savedFilename     String    @map("saved_filename")
   extension    Extension
   size         Int
   path         String
   postId       Int
   createdAt    DateTime  @default(now()) @map("created_at")
-  originalName String    @map("original_name")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   post         Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
 
@@ -80,6 +80,8 @@ model Image {
 
 model Video {
   id           Int       @id @default(autoincrement())
+  filename      String
+    savedFilename     String    @map("saved_filename")
   extension    Extension
   size         Int
   path         String
@@ -87,8 +89,6 @@ model Video {
   thumbnail    String?
   postId       Int
   createdAt    DateTime  @default(now()) @map("created_at")
-  originalName String    @map("original_name")
-  saveName     String    @map("save_name")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   post         Post      @relation(fields: [postId], references: [id])
 

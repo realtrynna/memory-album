@@ -4,7 +4,7 @@ import { CommandBus } from "@nestjs/cqrs";
 import { TypedBody, TypedRoute } from "@nestia/core";
 
 import type { CreateUserDto } from "@/users/interface/dto/create-user.dto";
-import { CreateUserCommand } from "@/users/application/commands/create-user.command";
+import { CreateUserCommand } from "@/users/application/command/create-user.command";
 import { UserExceptionFilter } from "@libs/exceptions/user/user.exception.filter";
 import { responseWrap } from "@libs/response-wrap";
 import { ResponseMap } from "@/constant";

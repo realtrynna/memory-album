@@ -1,7 +1,7 @@
 import { AggregateRoot } from "@nestjs/cqrs";
 import type { Prisma } from "@prisma/client";
 
-import { Provider } from "@/users/application/commands/create-user.command";
+import { Provider } from "@/users/application/command/create-user.command";
 import { UserCreatedEvent } from "@/users/domain/events/user-created.event";
 import type { PasswordService } from "@libs/password/password.module";
 

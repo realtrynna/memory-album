@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
 
 import { PostController } from "@/posts/interface/post.controller";
-import { CreatePostHandler } from "@/posts/application/commands/create-post.handler";
+import { CreatePostHandler } from "@/posts/application/command/create-post.handler";
 import { InjectionToken } from "@/posts/application/injection-token";
 import { PostRepositoryImplement } from "@/posts/infrastructure/post.repository.implement";
 

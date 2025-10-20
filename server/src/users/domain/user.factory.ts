@@ -1,7 +1,7 @@
 import { EventPublisher } from "@nestjs/cqrs";
 import { Inject } from "@nestjs/common";
 
-import { CreateUserCommand } from "@/users/application/commands/create-user.command";
+import { CreateUserCommand } from "@/users/application/command/create-user.command";
 import { User, UserProperties } from "@/users/domain/user";
 
 export class UserFactory {

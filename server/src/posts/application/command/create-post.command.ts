@@ -1,6 +1,6 @@
 import { ICommand } from "@nestjs/cqrs";
 
-import type { MediaFile } from "@/types";
+import type { ImageFile } from "@/types";
 
 export class CreatePostCommand implements ICommand {
     constructor(
@@ -8,6 +8,6 @@ export class CreatePostCommand implements ICommand {
         readonly content: string,
         readonly location: string,
         readonly userId: number,
-        readonly images: MediaFile[],
+        readonly images: ImageFile[],
     ) {}
 }

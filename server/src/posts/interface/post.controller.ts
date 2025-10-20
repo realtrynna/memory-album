@@ -5,7 +5,7 @@ import { CommandBus } from "@nestjs/cqrs";
 import { TypedBody, TypedRoute } from "@nestia/core";
 
 import { JwtAuthGuard } from "@libs/guards/jwt-auth.guard";
-import { CreatePostCommand } from "@/posts/application/commands/create-post.command";
+import { CreatePostCommand } from "@/posts/application/command/create-post.command";
 import type { CreatePostDto } from "@/posts/interface/dto/create-post.dto";
 import { JwtPayload } from "@/types";
 import { responseWrap } from "@libs/response-wrap";

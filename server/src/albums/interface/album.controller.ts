@@ -1,23 +1,51 @@
 import { Controller, Req, UseGuards } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { CommandBus } from "@nestjs/cqrs";
-import { TypedBody, TypedParam, TypedRoute } from "@nestia/core";
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { TypedBody, TypedParam, TypedQuery, TypedRoute } from "@nestia/core";
 
 import type { CreateAlbumDto } from "@/albums/interface/dto/create-album.dto";
-import { CreateAlbumCommand } from "@/albums/application/commands/create-album.command";
+import { CreateAlbumCommand } from "@/albums/application/command/create-album.command";
 import { JwtAuthGuard } from "@libs/guards/jwt-auth.guard";
 import type { RequestUser } from "@/types";
 import { responseWrap } from "@libs/response-wrap";
 import { ResponseMap } from "@/constant";
 import type { AddAlbumPostsDto } from "@/albums/interface/dto/add-album-posts.dto";
-import typia from "typia";
-import { AddAlbumPostsCommand } from "@/albums/application/commands/add-album-posts.command";
+import { AddAlbumPostsCommand } from "@/albums/application/command/add-album-posts.command";
+import { GetAlbumDetailQuery } from "@/albums/application/query/get-album-detail.query";
+import { GetAlbumsQuery } from "@/albums/application/query/get-albums.query";
+import type { GetAlbumsDto } from "@/albums/interface/dto/get-albums.dto";
+import { GetAlbumDetailResult } from "@/albums/application/query/get-album-detail.result";
 
 @ApiTags("앨범")
 @Controller("albums")
 @UseGuards(JwtAuthGuard)
 export class AlbumController {
-    constructor(readonly commandBus: CommandBus) {}
+    constructor(
+        readonly commandBus: CommandBus,
+        readonly queryBus: QueryBus,
+    ) {}
+
+    @TypedRoute.Get("/:albumId/posts")
+    async getAlbumDetail(@TypedParam("albumId") albumId: number) {
+        const command = new GetAlbumDetailQuery(albumId);
+
+        const result = (await this.queryBus.execute(
+            command,
+        )) as GetAlbumDetailResult;
+
+        return responseWrap(ResponseMap.GET_ALBUM_DETAIL_SUCCESS, result);
+    }
+
+    @TypedRoute.Get()
+    async getAlbums(@TypedQuery() query: GetAlbumsDto) {
+        const command = new GetAlbumsQuery(query.startDate, query.endDate);
+
+        const result = (await this.queryBus.execute(
+            command,
+        )) as GetAlbumDetailResult[];
+
+        return responseWrap(ResponseMap.GET_ALBUMS_SUCCESS, result);
+    }
 
     @TypedRoute.Post()
     async createAlbum(
@@ -45,5 +73,7 @@ export class AlbumController {
         );
 
         await this.commandBus.execute(command);
+
+        return responseWrap(ResponseMap.ADD_ALBUM_POSTS_SUCCESS, null);
     }
 }

@@ -1,10 +1,18 @@
 import type { Prisma } from "@prisma/client";
 
-export type AlbumProperties = Readonly<Prisma.AlbumUncheckedCreateInput>;
+import { Post } from "@/posts/domain/post";
+
+export type AlbumProperties = Readonly<
+    Prisma.AlbumUncheckedCreateInput & {
+        posts?: Post[];
+    }
+>;
 
 export class Album {
-    private readonly userId: number;
-    private readonly title: string;
+    readonly id: number;
+    readonly userId: number;
+    readonly title: string;
+    readonly posts: Post[];
 
     constructor(propertis: AlbumProperties) {
         Object.assign(this, propertis);

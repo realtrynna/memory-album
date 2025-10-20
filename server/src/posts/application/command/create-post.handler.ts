@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 
-import { CreatePostCommand } from "@/posts/application/commands/create-post.command";
+import { CreatePostCommand } from "@/posts/application/command/create-post.command";
 import { Post } from "@/posts/domain/post";
 import { Inject } from "@nestjs/common";
 import { InjectionToken } from "@/posts/application/injection-token";
@@ -15,25 +15,21 @@ export class CreatePostHandler
         private readonly postRepository: PostRepository,
     ) {}
 
-    async execute(command: CreatePostCommand) {
+    async execute(command: CreatePostCommand): Promise<void> {
         const post = new Post({
             title: command.title,
             content: command.content,
             location: command.location,
             userId: command.userId,
-            images: {
-                createMany: {
-                    data: command.images.map((file) => {
-                        return {
-                            originalName: file.filename,
-                            saveName: file.savedFilename,
-                            extension: file.extension,
-                            size: file.size,
-                            path: file.path,
-                        };
-                    }),
-                },
-            },
+            images: command.images.map((file) => {
+                return {
+                    filename: file.filename,
+                    savedFilename: file.savedFilename,
+                    extension: file.extension,
+                    size: file.size,
+                    path: file.path,
+                };
+            }),
         });
 
         await this.postRepository.create(post);

@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { Inject } from "@nestjs/common";
 
-import { CreateAlbumCommand } from "@/albums/application/commands/create-album.command";
+import { CreateAlbumCommand } from "@/albums/application/command/create-album.command";
 import { InjectionToken } from "@/albums/application/injection-token";
 import type { AlbumRepository } from "@/albums/domain/album.repository";
 import { Album } from "@/albums/domain/album";

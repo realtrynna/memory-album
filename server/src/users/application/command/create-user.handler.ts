@@ -1,7 +1,7 @@
 import { forwardRef, Inject } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 
-import { CreateUserCommand } from "@/users/application/commands/create-user.command";
+import { CreateUserCommand } from "@/users/application/command/create-user.command";
 import { UserFactory } from "@/users/domain/user.factory";
 import { PASSWORD_SERVICE_IMPLEMENT_TOKEN } from "@libs/password/password.module";
 import type { PasswordService } from "@libs/password/password.module";
