@@ -1,22 +1,25 @@
 import type { Prisma } from "@prisma/client";
 
-import { FileExtension, ImageFile } from "@/types";
-import { tags } from "typia";
+import { ImageFile } from "@/types";
+import { User } from "@/users/domain/user";
 
 export type PostProperties = Pick<
     Prisma.PostUncheckedCreateInput,
     "id" | "title" | "content" | "location" | "userId" | "createdAt"
 > & {
+    user?: Pick<User, "getEmail" | "getName">;
     images: ImageFile[];
 };
 
 export class Post {
-    private readonly title: string;
-    private readonly content: string;
-    private readonly location: string;
-    private readonly userId: number;
-    private readonly createdAt: Date;
-    private readonly images: ImageFile[];
+    readonly id: number;
+    readonly title: string;
+    readonly content: string;
+    readonly location: string;
+    readonly userId: number;
+    readonly createdAt: Date;
+    readonly user?: Pick<User, "getEmail" | "getName">;
+    readonly images: ImageFile[];
 
     constructor(properties: PostProperties) {
         Object.assign(this, properties);

@@ -26,6 +26,10 @@ export class User extends AggregateRoot {
         return this.id;
     }
 
+    get getName() {
+        return this.name;
+    }
+
     get getEmail() {
         return this.email;
     }

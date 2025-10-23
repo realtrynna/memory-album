@@ -23,10 +23,6 @@ export class GetAlbumsHandler
 
         const albums = await this.albumRepository.findMany(startDate, endDate);
 
-        return albums
-            ? albums.map((album) => {
-                  return GetAlbumDetailResult.from(album);
-              })
-            : [];
+        return albums.map((album) => GetAlbumDetailResult.from(album));
     }
 }

@@ -116,8 +116,8 @@ export class AlbumRepositoryImplement
                 extension: image.extension,
                 size: image.size,
                 path: image.path,
-                createdAt: image.createdAt.toISOString(),
-                updatedAt: image.updatedAt.toISOString(),
+                createdAt: image.createdAt.toLocaleString(),
+                updatedAt: image.updatedAt.toLocaleString(),
             }));
 
             return new Post({

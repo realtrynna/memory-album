@@ -13,7 +13,7 @@ import type { AddAlbumPostsDto } from "@/albums/interface/dto/add-album-posts.dt
 import { AddAlbumPostsCommand } from "@/albums/application/command/add-album-posts.command";
 import { GetAlbumDetailQuery } from "@/albums/application/query/get-album-detail.query";
 import { GetAlbumsQuery } from "@/albums/application/query/get-albums.query";
-import type { GetAlbumsDto } from "@/albums/interface/dto/get-albums.dto";
+import type { GetListDto } from "@/albums/interface/dto/get-list.dto";
 import { GetAlbumDetailResult } from "@/albums/application/query/get-album-detail.result";
 
 @ApiTags("앨범")
@@ -29,20 +29,19 @@ export class AlbumController {
     async getAlbumDetail(@TypedParam("albumId") albumId: number) {
         const command = new GetAlbumDetailQuery(albumId);
 
-        const result = (await this.queryBus.execute(
-            command,
-        )) as GetAlbumDetailResult;
+        const result = await this.queryBus.execute(command);
 
         return responseWrap(ResponseMap.GET_ALBUM_DETAIL_SUCCESS, result);
     }
 
     @TypedRoute.Get()
-    async getAlbums(@TypedQuery() query: GetAlbumsDto) {
-        const command = new GetAlbumsQuery(query.startDate, query.endDate);
+    async getAlbums(@TypedQuery() getAlbumsDto: GetListDto) {
+        const command = new GetAlbumsQuery(
+            getAlbumsDto.startDate,
+            getAlbumsDto.endDate,
+        );
 
-        const result = (await this.queryBus.execute(
-            command,
-        )) as GetAlbumDetailResult[];
+        const result = await this.queryBus.execute(command);
 
         return responseWrap(ResponseMap.GET_ALBUMS_SUCCESS, result);
     }
